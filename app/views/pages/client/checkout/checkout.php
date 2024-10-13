@@ -1,3 +1,6 @@
+<script>
+    var totalPrice = <?= $dataCart[0]['totalPrice'] ?>
+</script>
 <div class="checkout_page">
    
 
@@ -105,15 +108,16 @@
                                             <span class="text-right shipping-fee-amount" >0</span>
                                         </div>
                                         <input id="shipping_fee" name = "shipping_fee" class="hide">
+
                                         <div class="ec-checkout-coupan-content">
                                             <div class="ec-checkout-coupan-form" name="ec-checkout-coupan-form" method="post" action="#">
                                                 <input id="coupon_code" name="coupon_code" class="ec-coupan" type="text" placeholder="Nhập mã phiếu giảm giá của bạn">
-                                                <button onclick="updateProductCoupon(<?= $dataCart[0]['totalPrice'] ?>)" class="ec-coupan-btn button btn-primary" type="button">Dùng</button>
+                                                <button onclick="" class="ec-coupan-btn button btn-primary" id="btn_coupon" type="button">Dùng</button>
                                             </div>
                                         </div>
                                         <div class="ec-checkout-summary-total">
                                             <span class="text-left">Tổng tiền</span>
-                                            <span class="text-right order-total-amount"> <?= Format::formatCurrency($dataCart[0]['totalPrice']) ?></span>
+                                            <span class="text-right order-total-amount" id = "total_price"></span>
                                         </div>
                                     </div>
                                     <div class="ec-checkout-pro">
@@ -266,11 +270,23 @@
     const province =document.getElementById("province");
     const district =document.getElementById('district');
     const ward =document.getElementById('ward');
-    const fee = document.getElementsByClassName('shipping-fee-amount');
+    const tp =document.getElementById('total_price');
+    const btnCou =document.getElementById('btn_coupon');
     const inp =document.getElementById('shipping_fee');
+    btnCou.onclick = async ()=>{
+        const ip = $(".order-total-amount");
+        var p = <?= $dataCart[0]['totalPrice'] ?>;
+        const data = await updateProductCoupon(p); 
+        totalPrice -= data;
+        console.log(formatCurrency(totalPrice));
+        ip.text(formatCurrency(totalPrice));
+    }
     window.onload = ()=>{
+        const ip = $(".order-total-amount");
        getProvince();
        console.log(<?= $dataCart[0]['total_weight'] ?>)
+       console.log(formatCurrency(totalPrice))
+       ip.text(formatCurrency(totalPrice));
     }
     province.onchange = ()=>{
         if(province.value != ""){
@@ -285,10 +301,14 @@
         }
     }
     ward.onchange = async ()=>{
+        const ip = $(".order-total-amount");
         if(ward.value != ""){
             const sf = await updateShippingFee(district.value, <?= $dataCart[0]['totalPrice'] ?>, <?= $dataCart[0]['total_weight'] ?>);
             console.log(ward.value);
-            inp.value = sf;
+            inp.value = sf.Service_Fee;
+            totalPrice += sf.Service_Fee;
+            console.log(sf.Service_Fee);
+            ip.text(formatCurrency(totalPrice));
         }
     }
 

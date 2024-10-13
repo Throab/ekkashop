@@ -227,14 +227,13 @@ class Checkout extends Controller
             $dataInsertOrder['coupon_id'] = $dataCoupon['id'];
             $dataInsertOrder['total_money'] = $totalPrice;
         }
-
+        
         //Kiem tra phi giao hang
         if(!empty($dataPost['shipping_fee']) && $dataPost['shipping_fee'] != 0){
             $totalPrice += intval($dataPost['shipping_fee']);
             $dataInsertOrder['total_money'] = $totalPrice;
             $dataInsertOrder['shipping_fee'] = $dataPost['shipping_fee'];
         }
-        
         //Bat dau kiem tra hinh thuc thanh toan
         $paymentMethodArr = explode('-', $dataPost['payment_method']);
         $payment_method_id = reset($paymentMethodArr);

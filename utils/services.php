@@ -313,20 +313,20 @@ class Services
 
                     <tr style="font-weight: bold;">
                         <td colspan="3" style="text-align:right;">Giảm giá: </td>
-                        <td style="text-align:right;">- <?= Format::formatCurrency($subtotal - $total_money); ?></td>
+                        <td style="text-align:right;"><?= Format::formatCurrency($dataInfo['total_money'] - $dataInfo['shipping_fee'] - $subtotal); ?></td>
+                    </tr>
+
+                    <tr style="font-weight: bold;">
+                        <td colspan="3" style="text-align:right;">Phí giao hàng:: </td>
+                        <td style="text-align:right;"><?= Format::formatCurrency($dataInfo['shipping_fee']); ?></td>
                     </tr>
 
                     <tr style="font-weight: bold;">
                         <td colspan="3" style="text-align:right;">Thành tiền: </td>
-                        <td style="text-align:right;"><?= Format::formatCurrency($total_money); ?></td>
+                        <td style="text-align:right;"><?= Format::formatCurrency($dataInfo['total_money']) ?></td>
                     </tr>
                 </table>
             </div>
-            <p><u>Vui lòng thanh toán tới</u>:<br />
-                Ngân hàng: TECHCOMBANK<br />
-                A/C: 1021 8686 9999<br />
-            </p>
-            <p><i>Lưu ý: Vui lòng gửi thông báo chuyển tiền qua email tới datxomcity2@gmail.com</i></p>
         </body>
 
         </html>

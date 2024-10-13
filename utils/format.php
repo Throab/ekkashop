@@ -12,6 +12,12 @@ class Format
         return $formattedAmount;
     }
 
+    static function unFormatCurrency($amount){
+        $number = str_replace(' ₫', '', $amount);
+        $number = str_replace('.', '', $number);
+        return $number;
+    }
+
     static function formatNumber($number)
     {
         if ($number >= 1000000000) {

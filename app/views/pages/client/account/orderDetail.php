@@ -83,7 +83,7 @@
                                                 // if($total_money < $sub_total){
                                                 //     echo Format::formatCurrency($total_money - $subtotal); 
                                                 // }
-                                                echo Format::formatCurrency($total_money - $dataOrder[0]['shipping_fee'] - $sub_total)
+                                                echo Format::formatCurrency($total_money - $dataOrder[0]['shipping_fee'] - $subtotal)
                                                 ?></h4>
                                             </td>
                                         </tr>

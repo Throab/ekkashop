@@ -234,7 +234,6 @@ const updateHtmlCart = (data) => {
 const updateProductCoupon = async (totalPrice) => {
   const couponCodeEle = $("#coupon_code");
   const order_coupon_amount = $(".order-coupon-amount");
-  const order_total_amount = $(".order-total-amount");
   const couponCodeVal = couponCodeEle.val();
   if (!couponCodeVal) {
     return showToast("error", "Vui lòng không để trống mã giảm giá.");
@@ -254,8 +253,9 @@ const updateProductCoupon = async (totalPrice) => {
         order_coupon_amount.text(
           "-" + formatCurrency(parseInt(totalPrice) - data.data.totalPrice)
         );
-        order_total_amount.text(formatCurrency(data.data.totalPrice));
-        return showToast("success", data.message);
+        showToast("success", data.message);
+        console.log(totalPrice);
+        return parseInt(totalPrice) - data.data.totalPrice;
       }
 
       if (data.code == 400) {
@@ -343,7 +343,6 @@ const getWard = async (DistrictId) => {
 };
 const updateShippingFee = async (districtId, totalPrice, totalWeight) => {
   const shipping = $(".shipping-fee-amount");
-  const order_total_amount = $(".order-total-amount");
   try {
     const response = await fetch(
       `shipping/getFee/${districtId}/${totalPrice}/${totalWeight}`,
@@ -355,9 +354,11 @@ const updateShippingFee = async (districtId, totalPrice, totalWeight) => {
       const data = await response.json();
       if (data.code == 200) {
         shipping.text(formatCurrency(data.data.Service_Fee));
-        order_total_amount.text(formatCurrency(data.data.totalPrice));
-        order_total_amount.text();
-        return data.data.Service_Fee;
+        // const newData = {
+        //   'Service_Fee' : data.data.Service_Fee,
+        //   'New_Total_Price' : data.data
+        // };
+        return data.data;
       }
 
       if (data.code == 400) {

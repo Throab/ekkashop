@@ -174,7 +174,7 @@ $menus = array(
                 <!-- Ec Header Logo Start -->
                 <div class="col">
                     <div class="header-logo">
-                        <a href="index.html"><img src="<?= $dataStoreCustom['logo'] ?>" alt="Site Logo" /><img class="dark-logo" src="<?= $dataStoreCustom['logo'] ?>" alt="Site Logo" style="display: none;" /></a>
+                        <a href="home"><img src="<?= $dataStoreCustom['logo'] ?>" alt="Site Logo" /><img class="dark-logo" src="<?= $dataStoreCustom['logo'] ?>" alt="Site Logo" style="display: none;" /></a>
                     </div>
                 </div>
                 <!-- Ec Header Logo End -->
@@ -242,7 +242,7 @@ $menus = array(
                     foreach ($menus as $menu) {
                         $activeNav = $currentPath == $menu['path'] ? 'active' : '';
                     ?>
-                        <li class="<?= $activeNav ?>"><a href="index.html"><?= $menu['name'] ?></a></li>
+                        <li class="<?= $activeNav ?>"><a href="product-category"><?= $menu['name'] ?></a></li>
                     <?php } ?>
 
 

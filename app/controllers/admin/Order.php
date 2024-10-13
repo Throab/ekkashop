@@ -330,7 +330,7 @@ class Order extends Controller
                         'coupon_id' => $item['coupon_id'],
                         'payment_method_name' => $item['payment_method_name'],
                         'attribute_values' => [$item['attribute_value']],
-
+                        'shipping_fee' => $item['shipping_fee']
                     ];
                 } else {
                     $dataOrderNew[$idVariant]['attribute_values'][] = $item['attribute_value'];
@@ -353,6 +353,8 @@ class Order extends Controller
             'order_code' => $dataOrderNew[0]['order_code'],
             'order_date' => $dataOrderNew[0]['order_date'],
             'address' => $dataOrderNew[0]['address'],
+            'total_money' => $dataOrderNew[0]['total_money'],
+            'shipping_fee' => $dataOrderNew[0]['shipping_fee']
         ];
 
         $pdfContent = Services::generatePDF($dataInfo, $dataOrderNew, 'print');
@@ -391,7 +393,7 @@ class Order extends Controller
                         'coupon_id' => $item['coupon_id'],
                         'payment_method_name' => $item['payment_method_name'],
                         'attribute_values' => [$item['attribute_value']],
-
+                        'shipping_fee' => $item['shipping_fee']
                     ];
                 } else {
                     $dataOrderNew[$idVariant]['attribute_values'][] = $item['attribute_value'];
@@ -399,11 +401,11 @@ class Order extends Controller
             }
 
             foreach ($dataOrderNew as &$item) {
-                $item['attribute_values'] = implode('-', $item['attribute_values']);
+                $item['attribute_values'] = implode('-', $item['attribute_value']);
             }
 
             foreach ($dataOrderNew as &$item) {
-                $item['title'] = $item['title'] . " - ({$item['attribute_values']})";
+                $item['title'] = $item['title'] . " - ({$item['attribute_value']})";
             }
 
             $dataOrderNew = array_values($dataOrderNew);
@@ -414,6 +416,8 @@ class Order extends Controller
             'order_code' => $dataOrderNew[0]['order_code'],
             'order_date' => $dataOrderNew[0]['order_date'],
             'address' => $dataOrderNew[0]['address'],
+            'total_money' => $dataOrderNew[0]['total_money'],
+            'shipping_fee' => $dataOrderNew[0]['shipping_fee']
         ];
 
 
