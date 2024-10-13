@@ -1,0 +1,372 @@
+// cart
+const notCartHtml = () => {
+  return `<div class="text-center">
+            <img class="img-fluid" src="https://www.maytinhtrangbom.vn/client/theme/image/emptycart.webp" alt="Chưa có sản phẩm img">
+            <p >Chưa có sản phẩm.</p>
+          </div>`;
+};
+
+const itemCartHtml = (item) => `
+  <li class="d-flex align-items-center ">
+                    <a style="background-color: #f7f7f7;" href="product/${
+                      item.slug
+                    }-${item.product_id}" class="sidekka_pro_img  rounded-2  ">
+                        <img style="object-fit: contain; mix-blend-mode: darken;" class="img-responsive rounded-2" src="${
+                          item.thumb
+                        }" alt="product">
+                    </a>
+                    <div class="ec-pro-content">
+                        <a href="product/${item.slug}-${
+  item.product_id
+}" class="cart_pro_title">${item.title}</a>
+                        <label style="font-size: 12px" class="mb-0">
+                            <span class="title-variant fw-bold ">Phân loại: </span>
+                            <span>${item.attribute_values}</span>
+                        </label>
+                        <span class="cart-price mt-0 ">
+                            <span>${formatCurrency(item.price)}</span>
+                            <small>x ${item.quantity}</small>
+                        </span>
+                        <div class="qty-plus-minus">
+                            <div onclick="updateQuantityCart(${
+                              item.cart_item_id
+                            }, 'minus')" class="dec ec_qtybtn">-</div>
+                            <input class="qty-input" type="text" name="ec_qtybtn" value="${
+                              item.quantity
+                            }" />
+                            <div onclick="updateQuantityCart(${
+                              item.cart_item_id
+                            }, 'plus')" class="inc ec_qtybtn">+</div>
+                        </div>
+                        <button type="button" onclick="deleteCart(${
+                          item.cart_item_id
+                        })" class="remove">×</button>
+                    </div>
+                </li>
+`;
+
+const cartHtmlMain = (item) => {
+  return `
+  <tr>
+                                                    <td data-label="Product" class="ec-cart-pro-name">
+                                                        <a href="product/${
+                                                          item.slug
+                                                        }-${item.product_id}">
+                                                            <img class="ec-cart-pro-img mr-4" src="${
+                                                              item.thumb
+                                                            }" alt="${
+    item.title
+  }" />
+                                                            <div>
+                                                                <p class="mb-0  ">${
+                                                                  item.title
+                                                                }</p>
+                                                                <small style="font-size: 12px;" class="text-primary ">(${
+                                                                  item.attribute_values
+                                                                } )</small>
+                                                            </div>
+                                                        </a>
+                                                    </td>
+                                                    <td data-label="Price" class="ec-cart-pro-price"><span class="amount">${formatCurrency(
+                                                      item.price
+                                                    )}</span></td>
+                                                    <td data-label="Quantity" class="ec-cart-pro-qty" style="text-align: center;">
+                                                        <div class="cart-qty-plus-minus">
+                                                            <input class="cart-plus-minus" type="text" name="cartqtybutton" value="${
+                                                              item.quantity
+                                                            }" />
+                                                            <div class="ec_cart_qtybtn">
+                                                              <div onclick="updateQuantityCart(${
+                                                                item.cart_item_id
+                                                              }, 'plus')" class="inc ec_qtybtn">+</div>
+                                                              <div onclick="updateQuantityCart(${
+                                                                item.cart_item_id
+                                                              }, 'minus')" class="dec ec_qtybtn">-</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td data-label="Total" class="ec-cart-pro-subtotal">${formatCurrency(
+                                                      item.price * item.quantity
+                                                    )}</td>
+                                                    <td data-label="Remove" class="ec-cart-pro-remove">
+                                                        <button onclick="deleteCart(${
+                                                          item.cart_item_id
+                                                        })" type="button"><i class="ecicon eci-trash-o"></i></button>
+                                                    </td>
+                                                </tr>
+  `;
+};
+// fetch
+const getCartData = async () => {
+  try {
+    const response = await fetch("cart/getAllCartApi");
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.code == 200) {
+        updateHtmlCart(data.data);
+      }
+    } else {
+      throw new Error("Request failed");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+getCartData();
+
+const addCart = async () => {
+  try {
+    let data = [];
+    //kiem tra da chon bien the chua
+    if (!$("#product_variant_id").val()) {
+      return showToast("error", "Vui lòng lựa chọn phân loại.");
+    }
+
+    const formData = new FormData($("#formProduct").get(0));
+    const response = await fetch(`cart/addCartApi`, {
+      method: "POST",
+      body: formData,
+    });
+    if (response.ok) {
+      data = await response.json();
+    }
+    //Neu chua co tai khoan phai login
+    if (data.code == 300) {
+      window.location.href = "login";
+      return;
+    }
+    if (data.code == 200) {
+      showToast("success", data.message);
+    }
+    if (data.code == 400) {
+      showToast("error", data.message);
+    }
+    getCartData();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateQuantityCart = async (id, action) => {
+  try {
+    const response = await fetch(`cart/updateQuantityApi/${id}/${action}`, {
+      method: "GET",
+    });
+    if (response.ok) {
+      const data = await response.json();
+
+      if (data.code == 200) {
+        getCartData();
+      }
+
+      if (data.code == 400) {
+        showToast("error", data.message);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteCart = async (id) => {
+  try {
+    const response = await fetch(`cart/deleteCartApi/${id}`, {
+      method: "POST",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.code == 200) {
+        getCartData();
+      }
+
+      if (data.code == 400) {
+        return showToast("error", data.message);
+      }
+    } else {
+      console.log("Error deleting cart:", response.status);
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
+};
+
+const updateHtmlCart = (data) => {
+  let cartList = $("#cartList");
+  let cartMain = $("#cart_main");
+
+  cartList.empty();
+  cartMain.empty();
+
+  if (data.length > 0) {
+    let totalAmout = 0;
+
+    data.forEach(function (item) {
+      //cart modal
+      cartList.append(itemCartHtml(item));
+      //cart main
+      cartMain.append(cartHtmlMain(item));
+      totalAmout = item.totalPrice;
+    });
+
+    $("#subtotal-amount").html(formatCurrency(totalAmout));
+    $("#shopping-cart-quantity").html(data.length);
+
+    //Cart Mian
+    $("#order-subtotal").html(formatCurrency(totalAmout));
+    $("#order-total-amount").html(formatCurrency(totalAmout));
+  } else {
+    cartList.append(notCartHtml());
+    $("#subtotal-amount").html(formatCurrency(0));
+    $("#not-cart-main").append(
+      `<tr>
+        <td>Chưa có sản phẩm nào.</td>
+        </tr>`
+    );
+
+    //Cart main
+    $("#order-subtotal").html(formatCurrency(0));
+    $("#order-total-amount").html(formatCurrency(0));
+  }
+};
+
+const updateProductCoupon = async (totalPrice) => {
+  const couponCodeEle = $("#coupon_code");
+  const order_coupon_amount = $(".order-coupon-amount");
+  const order_total_amount = $(".order-total-amount");
+  const couponCodeVal = couponCodeEle.val();
+  if (!couponCodeVal) {
+    return showToast("error", "Vui lòng không để trống mã giảm giá.");
+  }
+
+  try {
+    const response = await fetch(
+      `coupon/applyCouponApi/${couponCodeVal}/${totalPrice}`,
+      {
+        method: "GET",
+      }
+    );
+    console.log(response.json);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.code == 200) {
+        order_coupon_amount.text(
+          "-" + formatCurrency(parseInt(totalPrice) - data.data.totalPrice)
+        );
+        order_total_amount.text(formatCurrency(data.data.totalPrice));
+        return showToast("success", data.message);
+      }
+
+      if (data.code == 400) {
+        return showToast("error", data.message);
+      }
+    } else {
+      console.log("Error deleting cart:", response.status);
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
+};
+
+const getProvince = async () => {
+  const provinceSelect = document.getElementById("province");
+  try {
+    const response = await fetch(`shipping/getProvince`, {
+      method: "GET",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const provinceJson = JSON.parse(data.data.Province_Json);
+      if (data.code == 200) {
+        provinceJson.forEach(function (province) {
+          var option = document.createElement("option");
+          option.value = province.ProvinceID;
+          option.text = province.ProvinceName;
+          provinceSelect.add(option);
+        });
+      }
+    }
+  } catch (error) {
+    console.log("An error occurred:", error);
+  }
+};
+
+const getDistrict = async (ProvinceId) => {
+  const districtSelect = document.getElementById("district");
+  try {
+    const response = await fetch(`shipping/getDistrict/${ProvinceId}`, {
+      method: "GET",
+    });
+    if (response.ok) {
+      districtSelect.innerHTML =
+        '<option value="" selected>Chọn quận huyện</option>';
+      const data = await response.json();
+      const districtJson = JSON.parse(data.data.District_Json);
+      districtJson.forEach(function (district) {
+        if (district.ProvinceID == ProvinceId) {
+          var option = document.createElement("option");
+          option.value = district.DistrictID;
+          option.text = district.DistrictName;
+          districtSelect.add(option);
+        }
+      });
+    }
+  } catch (error) {
+    console.log("An error occurred:", error);
+  }
+};
+
+const getWard = async (DistrictId) => {
+  const wardSelect = document.getElementById("ward");
+  try {
+    const response = await fetch(`shipping/getWard/${DistrictId}`, {
+      method: "GET",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const wardJson = JSON.parse(data.data.Ward_Json);
+      if (data.code == 200) {
+        wardSelect.innerHTML =
+          '<option value="" selected>Chọn phường xã</option>';
+        wardJson.forEach(function (ward) {
+          var option = document.createElement("option");
+          option.value = ward.WardCode;
+          option.text = ward.WardName;
+          wardSelect.add(option);
+        });
+      }
+    }
+  } catch (error) {
+    console.log("An error occurred:", error);
+  }
+};
+const updateShippingFee = async (districtId, totalPrice, totalWeight) => {
+  const shipping = $(".shipping-fee-amount");
+  const order_total_amount = $(".order-total-amount");
+  try {
+    const response = await fetch(
+      `shipping/getFee/${districtId}/${totalPrice}/${totalWeight}`,
+      {
+        method: "GET",
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      if (data.code == 200) {
+        shipping.text(formatCurrency(data.data.Service_Fee));
+        order_total_amount.text(formatCurrency(data.data.totalPrice));
+        order_total_amount.text();
+        return data.data.Service_Fee;
+      }
+
+      if (data.code == 400) {
+        return showToast("error", data.message);
+      }
+    } else {
+      console.log("Error deleting cart:", response.status);
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
+};

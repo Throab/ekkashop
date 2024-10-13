@@ -1,0 +1,23 @@
+{
+  "name": "ct6n/nhomcuat",
+  "description": "Du an web ban hang",
+  "authors": [
+    {
+      "name": "THANHBAONGUYEN",
+      "email": "nguyenthanhbao9a@gmail.com"
+    }
+  ],
+  "require": {
+    "phpmailer/phpmailer": "^6.8",
+    "cloudinary/cloudinary_php": "^2",
+    "tecnickcom/tcpdf": "^6.6",
+    "omnipay/paypal": "^3.0",
+    "guzzlehttp/guzzle": "^7.9",
+    "php-http/guzzle7-adapter": "^1.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": false
+    }
+  }
+}
