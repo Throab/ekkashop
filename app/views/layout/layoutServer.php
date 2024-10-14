@@ -2,13 +2,15 @@
 <html class="no-js" lang="en" dir="ltr">
 
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-
+<?php
+global $config;
+?>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><?= $title ?? 'Error' ?></title>
-    <base href="http://localhost:8000/">
+    <base href="<?= $config['app']['url'] ?>">
 
     <!-- site Favicon -->
     <link rel="icon" href="public/client/images/favicon/favicon.png" sizes="32x32" />

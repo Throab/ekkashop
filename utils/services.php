@@ -317,7 +317,7 @@ class Services
                     </tr>
 
                     <tr style="font-weight: bold;">
-                        <td colspan="3" style="text-align:right;">Phí giao hàng:: </td>
+                        <td colspan="3" style="text-align:right;">Phí giao hàng: </td>
                         <td style="text-align:right;"><?= Format::formatCurrency($dataInfo['shipping_fee']); ?></td>
                     </tr>
 
