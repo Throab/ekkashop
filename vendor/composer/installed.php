@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'ct6n/nhomcuat',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '8a2c290442c795efc2d3d2356d5d874e0cfdec51',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -38,9 +38,9 @@
             'dev_requirement' => false,
         ),
         'ct6n/nhomcuat' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '8a2c290442c795efc2d3d2356d5d874e0cfdec51',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
