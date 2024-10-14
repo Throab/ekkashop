@@ -3,7 +3,7 @@
         'name' => 'ct6n/nhomcuat',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '8a2c290442c795efc2d3d2356d5d874e0cfdec51',
+        'reference' => 'c1fb3f834410653ec127b8bcff6349bf94e94d31',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -40,7 +40,7 @@
         'ct6n/nhomcuat' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '8a2c290442c795efc2d3d2356d5d874e0cfdec51',
+            'reference' => 'c1fb3f834410653ec127b8bcff6349bf94e94d31',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
