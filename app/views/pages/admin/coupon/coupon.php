@@ -45,7 +45,7 @@
 												</div>
 
 											</td>
-											<td><?= date('Y-m-d') ?></td>
+											<td><?= date('Y-m-d', strtotime($create_at)) ?></td>
 											<td><?= $title ?></td>
 
 											<td><?= $code ?></td>

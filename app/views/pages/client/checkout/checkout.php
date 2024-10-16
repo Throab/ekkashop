@@ -273,7 +273,7 @@
     const tp =document.getElementById('total_price');
     const btnCou =document.getElementById('btn_coupon');
     const inp =document.getElementById('shipping_fee');
-    btnCou.onclick = async ()=>{
+    btnCou.onclick = async () =>{
         const ip = $(".order-total-amount");
         var p = <?= $dataCart[0]['totalPrice'] ?>;
         const data = await updateProductCoupon(p); 

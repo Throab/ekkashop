@@ -112,6 +112,7 @@ class Coupon extends Controller
             'min_amount' => $dataPost['min_amount'],
             'quantity' => $dataPost['quantity'],
             'expired' => $dataPost['expired'],
+            'create_at' => date('Y-m-d H:i:s'),
             'status' => strtotime($dataPost['expired']) > time() ? 1 : 0,
         ];
 
