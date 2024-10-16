@@ -67,7 +67,7 @@ class DashBoard extends Controller
         $dataRatingsProd = $this->productModel->getAllRatingDashboard() ?? [];
         $dataAmount = $this->orderModel->getAmountStatistical();
         $sumPurchaseOrder = $this->purchaseOrderModel->sumPurchaseOrder();
-
+        $sumShippingFee = 0;
 
         $totalRevenue = 0;
         $totalSold = 0;
@@ -76,6 +76,7 @@ class DashBoard extends Controller
         }
         foreach ($dataAmount as $itemAmount) {
             $totalRevenue += $itemAmount['total_amount'];
+            $sumShippingFee += $itemAmount['shipping_fee'];
         }
 
         $this->view('layoutServer', [
@@ -85,11 +86,12 @@ class DashBoard extends Controller
             'prodCount' => $prodCount['countProduct'] ?? 0,
             'userCount' => $userCount['countUser'] ?? 0,
             'dataProdOrderBySold' => $dataProdOrderBySold ?? [],
-            'totalRevenue' => $totalRevenue ?? 0,
+            'totalRevenue' => ($totalRevenue - $sumShippingFee) ?? 0,
             'totalSold' => $totalSold ?? 0,
             'orderCount' => $orderCount ?? 0,
             'sumPurchaseOrder' => $sumPurchaseOrder ?? 0,
             'dataRatingsProd' => $dataRatingsProd ?? [],
+            'totalShippingFee' => $sumShippingFee ?? 0
         ]);
     }
 }

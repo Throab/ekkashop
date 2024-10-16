@@ -21,7 +21,8 @@ class OrderModel extends BaseModel
                 YEAR(order_date) AS order_year,
                 MONTH(order_date) AS order_month,
                 COUNT(*) AS total_orders,
-                SUM(total_money) AS total_amount
+                SUM(total_money) AS total_amount,
+                SUM(shipping_fee) AS shipping_fee
             FROM
                 orders
             WHERE
@@ -97,6 +98,11 @@ class OrderModel extends BaseModel
         return $this->db->table('orders o')->select('o.id AS order_id, o.user_id, o.order_code, o.total_money, o.shipping_fee, o.order_date, pd.display_name AS payment_method_name, os.name AS order_status_name, o.order_status_id, u.fullname')->join('payment p', 'p.order_id = o.id')->join('payment_method pd', 'pd.id = p.payment_method_id')->join('user u', 'o.user_id = u.id')->join('order_status os', 'os.id = o.order_status_id')->orderBy('o.order_date')->get();
     }
 
+    function getTotalShippingFee(){
+        $sql = "SELECT SUM(shipping_fee) FROM orders";
+        $data = $this->db->query($sql)->fetchColumn();
+        return $data;
+    }
     function getAllOrderStatus()
     {
         return $this->db->table('order_status')->get();

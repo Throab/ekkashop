@@ -146,8 +146,8 @@
                                 <div class="card">
                                     <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
                                         <div class="left-info">
-                                            <span class="text-muted">Lượng truy cập</span>
-                                            <div><span class="fs-6 fw-bold me-2"><?= rand(0, 10000) ?></span></div>
+                                            <span class="text-muted">Tổng phí giao hàng</span>
+                                            <div><span class="fs-6 fw-bold me-2"><?= Format::formatCurrency($totalShippingFee) ?></span></div>
                                         </div>
                                         <div class="right-icon">
                                             <i class="icofont-users-social fs-3 color-light-success"></i>

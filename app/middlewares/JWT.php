@@ -1,7 +1,7 @@
 <?php
 class JWT
 {
-    private static $secretKey = 'Vungtan2004';
+    private static $secretKey = 'baothanh2003';
     static function createJWT($payload, $time)
     {
         // (3 * 24 * 3600) 3 day
