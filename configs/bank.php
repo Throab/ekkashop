@@ -17,6 +17,6 @@ $config['bank'] = [
     'paypal' => [
         'client_id' => 'AU__AjIAF-UDubzDsWsRVd24xpIOdnIrDVoKyO-SD1GF83eB1Fb__Ygv8-CnSYirYKeR25N4rO0IaKMY',
         'client_secret' => 'EFFEbhdS1qavz5eDhvzVf1g3xI_hUYWj-SCOiySAYYS_BoL71F45_4cvi2hD89QezDdzPBNMvkGRtmDs',
-        'paypal_currency' => 'VND'
+        'currency' => 'USD'
     ]
 ];

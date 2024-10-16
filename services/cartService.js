@@ -355,9 +355,10 @@ const updateShippingFee = async (districtId, totalPrice, totalWeight) => {
       if (data.code == 200) {
         shipping.text(formatCurrency(data.data.Service_Fee));
         // const newData = {
-        //   'Service_Fee' : data.data.Service_Fee,
-        //   'New_Total_Price' : data.data
+        //   Service_Fee: data.data.Service_Fee,
+        //   New_Total_Price: data.data,
         // };
+        console.log(data.data.Service_Fee);
         return data.data;
       }
 

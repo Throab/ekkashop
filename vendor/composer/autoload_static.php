@@ -145,6 +145,23 @@ class ComposerStaticInitc07875bed6de2e132a5f7ac20a8c425e
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'a' => 
+        array (
+            'angelleye\\PayPal' => 
+            array (
+                0 => __DIR__ . '/..' . '/angelleye/paypal-php-library/src',
+            ),
+        ),
+        'P' => 
+        array (
+            'PayPal' => 
+            array (
+                0 => __DIR__ . '/..' . '/paypal/rest-api-sdk-php/lib',
+            ),
+        ),
+    );
+
     public static $classMap = array (
         'Cloudinary\\Api\\Admin\\AdminApi' => __DIR__ . '/..' . '/cloudinary/cloudinary_php/src/Api/Admin/AdminApi.php',
         'Cloudinary\\Api\\Admin\\AnalysisTrait' => __DIR__ . '/..' . '/cloudinary/cloudinary_php/src/Api/Admin/AnalysisTrait.php',
@@ -826,6 +843,7 @@ class ComposerStaticInitc07875bed6de2e132a5f7ac20a8c425e
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitc07875bed6de2e132a5f7ac20a8c425e::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitc07875bed6de2e132a5f7ac20a8c425e::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitc07875bed6de2e132a5f7ac20a8c425e::$prefixesPsr0;
             $loader->classMap = ComposerStaticInitc07875bed6de2e132a5f7ac20a8c425e::$classMap;
 
         }, null, ClassLoader::class);

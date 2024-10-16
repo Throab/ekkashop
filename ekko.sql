@@ -555,7 +555,7 @@ INSERT INTO `payment_method` (`id`, `name`, `display_name`, `description`, `thum
 (1, 'cash_on_delivery', 'Thanh toán khi nhận hàng', 'Thanh toán bằng tiền mặt khi giao hàng.', 'https://phuhungthinh.com/wp-content/uploads/2022/08/thanh-toan.png', 1),
 (2, 'vnpay', 'VNPAY', 'Thanh toán qua VNPAY, bạn có thể thanh toán bằng thẻ tín dụng nếu bạn không có tài khoản VNPAY.', 'https://vnpay.vn/s1/statics.vnpay.vn/2023/6/0oxhzjmxbksr1686814746087.png', 1),
 (3, 'momo', 'MOMO', 'Thanh toán qua MOMO, bạn có thể thanh toán bằng thẻ tín dụng nếu bạn không có tài khoản MOMO.', 'https://developers.momo.vn/v3/assets/images/icon-52bd5808cecdb1970e1aeec3c31a3ee1.png', 1),
-(4, 'onepay', 'ONEPAY', 'Thanh toán qua ONEPAY, bạn có thể thanh toán bằng thẻ tín dụng nếu bạn không có tài khoản ONEPAY.', 'https://play-lh.googleusercontent.com/mvedVCbQg6ADKUYYraVLOlmOfOy2Rz66kEPvbmxt5xZ2TTa90Go9jBD2dJrwWmEo5g8', 0),
+(4, 'paypal', 'PAYPAL', 'Thanh toán qua PAYPAL, bạn có thể thanh toán bằng thẻ tín dụng nếu bạn không có tài khoản PAYPAL.', 'https://play-lh.googleusercontent.com/mvedVCbQg6ADKUYYraVLOlmOfOy2Rz66kEPvbmxt5xZ2TTa90Go9jBD2dJrwWmEo5g8', 0),
 (6, 'thu nghiem', 'Thử nghiệm', 'ưdwdwdwdw', 'https://res.cloudinary.com/dfgkkkcoc/image/upload/v1700730034/uploads_ekkashop/php2420_ww14or.png', 0);
 
 -- --------------------------------------------------------

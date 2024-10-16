@@ -49,7 +49,13 @@ class Checkout extends Controller
             return $this->handlePaymentMethod($dataInsertOrder, $dataCartNew, $payment_method_id, $dataGet);
         }
 
-        // Thanh toan zalopay
+        // Thanh toan paypal
+
+        if (isset($dataGet['paymentId']) && Cookie::get('payment_method') == 'paypal') {
+            return $this->handlePaymentMethod($dataInsertOrder, $dataCartNew, $payment_method_id, $dataGet);
+        }
+
+
 
         // Neu thanh toan that bai 
         Cookie::unsetCookie('dataOrderTemp');
@@ -290,6 +296,29 @@ class Checkout extends Controller
             }
             return $this->res->setToastSession('error', 'Phương thức thanh toán lỗi vui lòng thử lại.', 'home');
         }
+
+        //Thanh toan khi su dung paypal
+        if (trim(end($paymentMethodArr)) == 'paypal') {
+
+            $dataOrderTemp = [
+                'payment_method_id' => $payment_method_id,
+                'dataInsertOrder' => $dataInsertOrder,
+                'dataCartNew' => $dataCartNew,
+            ];
+            $paypalInf = Services::generatePaypalUrl([
+                'amount' => $dataInsertOrder['total_money'],
+                'order_code' => $dataInsertOrder['order_code'],
+            ]);
+            $bankUrl = $paypalInf['url'];
+            if (!empty($bankUrl)) {
+                //Set tam vao data vao cookie
+                Cookie::set('dataOrderTemp', json_encode(value: $dataOrderTemp));
+                Cookie::set('payment_method',$paypalInf['payment_method']);
+                header('location: ' . $bankUrl);
+                return;
+            }
+            return $this->res->setToastSession('error', 'Phương thức thanh toán lỗi vui lòng thử lại.', 'home');
+        }
     } 
     
     private function handlePaymentMethod($dataInsertOrder, $dataCartNew, $payment_method_id, $dataGet = [])
@@ -334,10 +363,10 @@ class Checkout extends Controller
 
                 $createPaymentTransactions = $this->paymentModel->addNewPaymentTransactions([
                     'bankCode' => $dataGet['vnp_BankCode'],
-                    'bankTranNo' => $dataGet['vnp_BankTranNo'],
+                    'bankTranNo' => password_hash($dataGet['vnp_BankTranNo'], PASSWORD_BCRYPT),
                     'cardType' => $dataGet['vnp_CardType'],
                     'payDate' => $dataGet['vnp_PayDate'],
-                    'transactionNo' => $dataGet['vnp_TransactionNo'],
+                    'transactionNo' => password_hash($dataGet['vnp_TransactionNo'], PASSWORD_BCRYPT),
                     'secureHash' => $dataGet['vnp_SecureHash'],
                 ]);
                 if (!$createPaymentTransactions) {
@@ -353,10 +382,10 @@ class Checkout extends Controller
 
                 $createPaymentTransactions = $this->paymentModel->addNewPaymentTransactions([
                     'bankCode' => 'SML',
-                    'bankTranNo' => $dataGet['transId'],
+                    'bankTranNo' => password_hash($dataGet['transId'], PASSWORD_BCRYPT),
                     'cardType' => $dataGet['payType'],
                     'payDate' => strtotime($dataGet['responseTime']) ?? time(),
-                    'transactionNo' => $dataGet['transId'],
+                    'transactionNo' => password_hash($dataGet['transId'], PASSWORD_BCRYPT),
                     'secureHash' => $dataGet['signature'],
                 ]);
                 if (!$createPaymentTransactions) {
@@ -366,7 +395,25 @@ class Checkout extends Controller
                 $payment_transaction_id = $this->db->lastInsertId();
             }
 
-            // ZALOPAY
+            // PAYPAL
+
+            if(Cookie::get('payment_method') == 'paypal'){
+                Cookie::unsetCookie('payment_method');
+                $createPaymentTransactions = $this->paymentModel->addNewPaymentTransactions([
+                    'bankCode' => 'PAYPAL',
+                    'bankTranNo' => password_hash($dataGet['paymentId'], PASSWORD_BCRYPT),
+                    'cardType' => 'PAYPAL',
+                    'payDate' => strtotime($dataGet['responseTime']) ?? time(),
+                    'transactionNo' => password_hash($dataGet['paymentId'], PASSWORD_BCRYPT),
+                    'secureHash' => '',
+                ]);
+                if (!$createPaymentTransactions) {
+                    return $this->res->setToastSession('error', 'Đặt hàng thất bại vui lòng thử lại.', 'checkout');
+                }
+
+                $payment_transaction_id = $this->db->lastInsertId();
+            }
+
         }
 
         //Them vao payment
@@ -397,41 +444,6 @@ class Checkout extends Controller
         }
     }
 
-
-
-    //Xử lý khi có thanh toán online
-    function paymentFinal()
-    {
-        $this->res->setToastSession('error', 'Đặt hàng thất bại vui lòng thử lại.', 'login');
-        $dataOrderTemp = json_decode(Cookie::get('dataOrderTemp'), 1);
-        if (empty($dataOrderTemp)) {
-            return $this->res->redirect('home');
-        }
-        $dataGet = $this->req->getFields();
-        unset($dataGet['url']);
-
-        $dataInsertOrder = $dataOrderTemp['dataInsertOrder'];
-        $dataCartNew = $dataOrderTemp['dataCartNew'];
-        $payment_method_id = $dataOrderTemp['payment_method_id'];
-    
-        //Kiem tra do la hinh thuc thanh toan nao
-        //Thanh toan vnpay
-        if (isset($dataGet['vnp_OrderInfo']) == 'vnpay_payment' && $dataGet['vnp_ResponseCode'] == '00' && $dataGet['vnp_TransactionStatus'] == '00') {
-            return $this->handlePaymentMethod($dataInsertOrder, $dataCartNew, $payment_method_id, $dataGet);
-        }
-
-        // Thanh toan momo
-
-        if (isset($dataGet['orderInfo']) == 'momo_payment' && $dataGet['errorCode'] == '0') {
-            return $this->handlePaymentMethod($dataInsertOrder, $dataCartNew, $payment_method_id, $dataGet);
-        }
-
-        // Thanh toan zalopay
-
-        // Neu thanh toan that bai 
-        Cookie::unsetCookie('dataOrderTemp');
-        return $this->res->setToastSession('error', 'Đặt hàng thất bại vui lòng thử lại.', 'my-account');
-    }
 
     // Xu ly trang thai don hang
     function updateOrderStatus()

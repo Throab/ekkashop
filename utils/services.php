@@ -149,33 +149,7 @@ class Services
         return $vnp_Url;
     }
 
-    static function generatePaypalUrl($orderData)
-    {
-        global $config;
-        $configPaypal = $config['bank']['paypal'];
-        if(empty($configPaypal)) return false;
-        define('CLIENT_ID', $configPaypal['client_id']);
-        define('CLIENT_SECRECT',$configPaypal['client_secret']);
-        $gateway = Omnipay::create('PayPal_Rest');
-        $gateway->setClientId(CLIENT_ID);
-        $gateway->setSecret(CLIENT_SECRECT);
-        $gateway->setTestMode(true);
-        $purchaseData = [
-            'amount' => 100.00, // Amount to charge
-            'currency' => 'VND', // Currency code
-            'description' => 'Your product description',
-            'transactionId' => '1hfsuyrh23113', // Unique transaction ID
-            'returnUrl' => $config['app']['url'].'/payment-final',
-            'cancelUrl' => $config['app']['url'].'/payment-final'
-        ];
-
-        $response = $gateway->purchase($purchaseData)->Send();
-        if($response->isSuccessful()){
-            return $response->getRedirectUrl();
-        }
-        return false;
-
-    }
+    
     private static function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
@@ -250,7 +224,86 @@ class Services
         return $jsonResult['payUrl'];
     }
 
+    static function generatePaypalUrl($orderData){
+        global $config;
+        $url = $config['app']['url'];
+        $configPaypal = $config['bank']['paypal'];
+        $clientId = $configPaypal['client_id'];
+        $clientSecret = $configPaypal['client_secret'];
+        $currency = $configPaypal['currency'];
+        $returnUrl = $url."/checkout-final";
+        $cancelUrl = $url."/checkout-final";
+        $transferRate = Format::get_rate_usd_to_vnd();
+        $amount = Format::formatUsd((float)($orderData['amount']/$transferRate))."";
+        $url = 'https://api.sandbox.paypal.com/v1/oauth2/token';
+        $postData = 'grant_type=client_credentials';
+    
+        // Lấy access token
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, "$clientId:$clientSecret");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Accept-Language: en_US']);
+        $response = curl_exec($ch);
+        curl_close($ch);
+    
+        $response = json_decode($response);
+        $accessToken = $response->access_token;
+    
+        // Tạo yêu cầu thanh toán
+        $url = 'https://api.sandbox.paypal.com/v1/payments/payment';
+        $paymentData = [
+            'intent' => 'sale',
+            'redirect_urls' => [
+                'return_url' => $returnUrl,
+                'cancel_url' => $cancelUrl,
+            ],
+            'payer' => [
+                'payment_method' => 'paypal',
+            ],
+            'transactions' => [
+                [
+                    'amount' => [
+                        'total' => $amount,
+                        'currency' => $currency,
+                    ],
+                    'description' => 'Thanh toán Paypal',
+                ],
+            ],
+        ];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($paymentData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            "Authorization: Bearer $accessToken",
+        ]);
+        $response = curl_exec($ch);
+        curl_close($ch);
+    
+        $response = json_decode($response);
+        $approvalUrl = '';
 
+        foreach ($response->links as $link) {
+            if ($link->rel === 'approval_url') {
+                $approvalUrl = $link->href;
+                break;
+            }
+        }
+        $paymentMethod = $response->payer->payment_method;
+        return $data = [
+            "url" => $approvalUrl,
+            "payment_method" => "paypal"
+        ];
+        // return $approvalUrl;       
+    }
+
+    
     static private function getHTMLPurchaseDataToPDF($dataInfo, $products)
     {
         ob_start();
@@ -368,4 +421,5 @@ class Services
 
         // $pdf->Output('public/uploads/invoice/' . $filename . 'pdf', '');
     }
+
 }

@@ -13,7 +13,8 @@
     "tecnickcom/tcpdf": "^6.6",
     "omnipay/paypal": "^3.0",
     "guzzlehttp/guzzle": "^7.9",
-    "php-http/guzzle7-adapter": "^1.0"
+    "php-http/guzzle7-adapter": "^1.0",
+    "angelleye/paypal-php-library": "^3.0"
   },
   "config": {
     "allow-plugins": {

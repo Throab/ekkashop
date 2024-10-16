@@ -133,7 +133,7 @@ class Shipping extends Controller{
         
         // Thiết lập cURL
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee");
+        curl_setopt($ch, CURLOPT_URL, "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Content-Type: application/json",
@@ -153,7 +153,8 @@ class Shipping extends Controller{
         $totalPrice += intval($fee);
         echo $this->res->dataApi('200', 'Fee', [
             "totalPrice" => $totalPrice,
-            "Service_Fee" => $fee
+            "Service_Fee" => $fee,
+            "Service_id" => $serviceId
         ]);
         return;
     }
