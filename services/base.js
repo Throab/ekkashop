@@ -1,3 +1,4 @@
+const url = "http://localhost:8000";
 const showToast = (type, message, timer = 1500) => {
   const Toast = Swal.mixin({
     toast: true,

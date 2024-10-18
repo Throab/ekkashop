@@ -1,4 +1,3 @@
-const url = "http://localhost:8000";
 // change isBlock
 const toggleStatusProd = (id) => {
   $.ajax({
